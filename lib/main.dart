@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'jokeService.dart'; // Assuming this service is defined elsewhere.
-import 'dart:convert';
+import 'jokeService.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Joke app',
+      title: 'Joke App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
         useMaterial3: true,
@@ -38,14 +37,99 @@ class _JokeListPageState extends State<JokeListPage> {
     setState(() {
       _isLoading = true;
     });
+
     try {
-      _jokesRaw = await _jokeService.fetchJokesRaw();
+      final jokesRaw = await _jokeService.fetchJokesRaw();
+      setState(() {
+        _jokesRaw = jokesRaw;
+      });
     } catch (e) {
-      print('Error fetching jokes: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error fetching jokes: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
-    setState(() {
-      _isLoading = false;
-    });
+  }
+
+  String _formatJoke(Map<String, dynamic> jokeJson) {
+    if (jokeJson['type'] == 'single') {
+      return jokeJson['joke'];
+    } else {
+      return '${jokeJson['setup']}\n\n${jokeJson['delivery']}';
+    }
+  }
+
+  Widget _buildJokeList() {
+    if (_jokesRaw.isEmpty) {
+      return const Center(
+        child: Text(
+          'No jokes fetched yet.',
+          style: TextStyle(fontSize: 18, color: Colors.pink),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: _jokesRaw.length,
+      itemBuilder: (context, index) {
+        final jokeJson = _jokesRaw[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 16),
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.purple.shade100,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Text(
+                        'Programming',
+                        style: TextStyle(
+                          color: Colors.pink,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      '#${jokeJson['id'] ?? ''}', // Display the joke ID
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  _formatJoke(jokeJson),
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -53,7 +137,7 @@ class _JokeListPageState extends State<JokeListPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Joke app'),
+        title: const Text('Joke App'),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -80,7 +164,7 @@ class _JokeListPageState extends State<JokeListPage> {
               ),
               const SizedBox(height: 16),
               const Text(
-                'Click the button below to get a joke',
+                'Click the button below to fetch jokes',
                 style: TextStyle(
                   fontSize: 18,
                   fontStyle: FontStyle.italic,
@@ -92,15 +176,15 @@ class _JokeListPageState extends State<JokeListPage> {
               ElevatedButton(
                 onPressed: _isLoading ? null : _fetchJokes,
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.pink,
+                  backgroundColor: Colors.pink,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24),
                   ),
                 ),
                 child: Text(
-                  _isLoading ? 'Loading...' : 'Get a joke',
-                  style: const TextStyle(fontSize: 20,color: Colors.black),
+                  _isLoading ? 'Loading...' : 'Fetch Jokes',
+                  style: const TextStyle(fontSize: 20, color: Colors.white),
                 ),
               ),
               const SizedBox(height: 24),
@@ -113,37 +197,6 @@ class _JokeListPageState extends State<JokeListPage> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildJokeList() {
-    if (_jokesRaw.isEmpty) {
-      return const Center(
-        child: Text(
-          'No Jokes fetched yet.',
-          style: TextStyle(fontSize: 18, color: Colors.pink),
-        ),
-      );
-    }
-    return ListView.builder(
-      itemCount: _jokesRaw.length,
-      itemBuilder: (context, index) {
-        final jokeJson = _jokesRaw[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 16),
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              jsonEncode(jokeJson),
-              style: const TextStyle(fontSize: 16),
-            ),
-          ),
-        );
-      },
     );
   }
 }
