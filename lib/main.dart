@@ -137,7 +137,6 @@ class _JokeListPageState extends State<JokeListPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Joke App'),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -153,7 +152,7 @@ class _JokeListPageState extends State<JokeListPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Text(
-                'Welcome to the Joke App!',
+                'Daily Laughs!',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -164,7 +163,7 @@ class _JokeListPageState extends State<JokeListPage> {
               ),
               const SizedBox(height: 16),
               const Text(
-                'Click the button below to fetch jokes',
+                'Tap the button below to grab some laughs!',
                 style: TextStyle(
                   fontSize: 18,
                   fontStyle: FontStyle.italic,
@@ -183,7 +182,7 @@ class _JokeListPageState extends State<JokeListPage> {
                   ),
                 ),
                 child: Text(
-                  _isLoading ? 'Loading...' : 'Fetch Jokes',
+                  _isLoading ? 'Loading...' : 'Show Me',
                   style: const TextStyle(fontSize: 20, color: Colors.white),
                 ),
               ),
