@@ -1,16 +1,25 @@
-# hello_flutter_app
+# Joke App
 
-A new Flutter project.
+A fun Flutter app that fetches jokes from the JokeAPI and displays them in a stylish list format.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Fetches jokes from JokeAPI.
+- Displays jokes in a user-friendly list.
+- Handles loading and error states.
+- Beautiful Material 3 design with a pink color scheme.
 
-A few resources to get you started if this is your first Flutter project:
+## Requirements
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Flutter**: `>=3.0.0 <4.0.0`
+- A device or emulator to run the app.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+### This project uses the following packages:
+
+- flutter: >=3.0.0 <4.0.0 - Flutter SDK for building the app.
+- dio: ^5.0.0 - A powerful HTTP client for making API requests.
+- cupertino_icons: ^1.0.2 - Provides iOS-style icons for the app.
+- flutter_lints: ^2.0.0 - Provides lint rules for maintaining code quality.
+
+![img.png](img.png)
